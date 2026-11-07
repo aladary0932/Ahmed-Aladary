@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة الرواتب والتعويضات</title>
+    <style>
+        body { font-family: Tahoma, Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; direction: rtl; text-align: right; }
+        .container { max-width: 600px; margin: 0 auto; background: #ffffff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #34495e; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        .result-box { margin-top: 25px; background: #e8f4fd; padding: 15px; border-radius: 8px; border: 1px solid #bbe1fa; }
+        .result-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; }
+        .result-row.total { font-weight: bold; color: #2c3e50; border-top: 2px solid #bbe1fa; padding-top: 10px; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>حاسبة الرواتب والحسميات</h2>
+    
+    <div class="form-group">
+        <label for="jobTitle">المسمى الوظيفي:</label>
+        <select id="jobTitle" onchange="calculate()">
+            <option value="11050">مدير</option>
+            <option value="6500">أمين السر</option>
+            <option value="6500">المحاسب</option>
+            <option value="6500">مرشد تربوي</option>
+            <option value="6500">أمين مستودع</option>
+            <option value="6500">موجه</option>
+            <option value="6500">مشرف مسائي</option>
+            <option value="6500">مشرف ليلي</option>
+            <option value="6500">مرشد طلاب مسائي</option>
+            <option value="6500">مرشد طلاب ليلي</option>
+            <option value="0">طاهٍ</option>
+            <option value="0">حارس</option>
+            <option value="0">مستخدم</option>
+            <option value="0">عامل مطبخ</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="baseSalary">الأجر المقطوع:</label>
+        <input type="number" id="baseSalary" value="0" oninput="calculate()">
+    </div>
+
+    <div class="form-group">
+        <label for="familyAllowance">التعويض العائلي:</label>
+        <input type="number" id="familyAllowance" value="0" oninput="calculate()">
+    </div>
+
+    <div class="result-box">
+        <div class="result-row">
+            <span>التعويضات (حسب الوظيفة):</span>
+            <span id="resJobAllowance">0</span>
+        </div>
+        <div class="result-row">
+            <span>الأجر قبل حسم الضرائب:</span>
+            <span id="resGross">0</span>
+        </div>
+        <div class="result-row">
+            <span>التأمينات الاجتماعية (7%):</span>
+            <span id="resSocial">0</span>
+        </div>
+        <div class="result-row">
+            <span>طابع عقد (0.8%):</span>
+            <span id="resStamp">0</span>
+        </div>
+        <div class="result-row">
+            <span>ضريبة الدخل:</span>
+            <span id="resTax">0</span>
+        </div>
+        <div class="result-row">
+            <span>مجموع الحسميات:</span>
+            <span id="resDeductions">0</span>
+        </div>
+        <div class="result-row total">
+            <span>صافي الراتب:</span>
+            <span id="resNet">0</span>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculate() {
+    let jobAllowance = parseFloat(document.getElementById('jobTitle').value) || 0;
+    let baseSalary = parseFloat(document.getElementById('baseSalary').value) || 0;
+    let familyAllowance = parseFloat(document.getElementById('familyAllowance').value) || 0;
+
+    let social = baseSalary * 0.07;
+    let stamp = baseSalary * 0.008;
+    let gross = familyAllowance + jobAllowance + baseSalary;
+    
+    let taxableBase = (baseSalary + jobAllowance + familyAllowance) - (stamp + social);
+    let tax = Math.max(0, (taxableBase - 12560) * 0.15);
+    
+    let totalDeductions = social + stamp + tax;
+    let netSalary = gross - totalDeductions;
+
+    document.getElementById('resJobAllowance').innerText = jobAllowance.toFixed(2);
+    document.getElementById('resGross').innerText = gross.toFixed(2);
+    document.getElementById('resSocial').innerText = social.toFixed(2);
+    document.getElementById('resStamp').innerText = stamp.toFixed(2);
+    document.getElementById('resTax').innerText = tax.toFixed(2);
+    document.getElementById('resDeductions').innerText = totalDeductions.toFixed(2);
+    document.getElementById('resNet').innerText = netSalary.toFixed(2);
+}
+
+calculate();
+</script>
+
+</body>
+</html>
